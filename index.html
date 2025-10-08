@@ -109,33 +109,81 @@
   </div>
 
   <!-- Main header -->
-  <header class="main-header">
-    <div class="container header-inner">
-      <div class="brand">
-      <a href="./index.html">
-  <img src="./logo.png" alt="logo" class="brand-logo" onerror="this.style.opacity=.6">
-</a>
+ <header style="display:flex; align-items:center; justify-content:space-between; padding:10px 20px; background-color:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1); position:sticky; top:0; z-index:999;">
+  <!-- Left Logo -->
+  <div style="display:flex; align-items:center;">
+    <img src="./LOGO.png" alt="Kasturi Divine" style="height:60px;">
+  </div>
 
-        <div style="display:none"><h1>KASTURI DIVINE</h1></div>
-      </div>
+  <!-- Navigation Menu -->
+  <nav id="nav-menu" style="display:flex; gap:20px; align-items:center;">
+    <a href="#home" style="text-decoration:none; color:#000; font-weight:600;">Home</a>
+    <a href="#course" style="text-decoration:none; color:#000; font-weight:600;">Course</a>
+    <a href="#product" style="text-decoration:none; color:#000; font-weight:600;">Product</a>
+    <a href="#about" style="text-decoration:none; color:#000; font-weight:600;">About</a>
+    <a href="#contact" style="text-decoration:none; color:#000; font-weight:600;">Contact</a>
+  </nav>
 
-      <nav class="nav" role="navigation" aria-label="Main menu">
-        <a href="#home">Home</a>
-        <a href="./course.html">Course</a>
-        <a href="#product">Product</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
+  <!-- Social Icons -->
+  <div style="display:flex; align-items:center; gap:10px;">
+    <a href="https://www.facebook.com/kasturidivine" target="_blank" title="Facebook">
+      <i class="fa-brands fa-facebook fa-lg" style="color:#4267B2;"></i>
+    </a>
+    <a href="https://www.instagram.com/kasturidivine/" target="_blank" title="Instagram">
+      <i class="fa-brands fa-instagram fa-lg" style="color:#E1306C;"></i>
+    </a>
+    <a href="https://www.youtube.com/@KasutriDivine" target="_blank" title="YouTube">
+      <i class="fa-brands fa-youtube fa-lg" style="color:#FF0000;"></i>
+    </a>
 
-      <div class="header-right">
-        <div class="social-icons" aria-hidden="false">
-          <a href="https://facebook.com/" target="_blank" rel="noopener" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="https://instagram.com/" target="_blank" rel="noopener" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-          <a href="https://youtube.com/" target="_blank" rel="noopener" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-        </div>
-        <a class="btn-book" href="https://calendly.com/kasturidivinei/help-line-number-kasturi-divine" target="_blank">Book Help Line</a>
-      </div>
+    <a href="https://wa.me/919354370946" target="_blank" style="margin-left:10px;">
+      <button style="background-color:#007bff; color:white; border:none; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer;">
+        Book Help Line
+      </button>
+    </a>
+
+    <!-- Hamburger icon for mobile -->
+    <div id="menu-toggle" style="display:none; flex-direction:column; cursor:pointer; margin-left:10px;">
+      <span style="width:25px; height:3px; background:#000; margin:4px 0;"></span>
+      <span style="width:25px; height:3px; background:#000; margin:4px 0;"></span>
+      <span style="width:25px; height:3px; background:#000; margin:4px 0;"></span>
     </div>
+  </div>
+</header>
+
+<!-- Responsive CSS -->
+<style>
+  @media (max-width: 768px) {
+    #nav-menu {
+      display: none;
+      flex-direction: column;
+      background-color: white;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px 0;
+    }
+    #menu-toggle {
+      display: flex;
+    }
+  }
+</style>
+
+<!-- JS for Menu Toggle -->
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
+  menuToggle.addEventListener('click', () => {
+    navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+  });
+</script>
+
+<!-- Font Awesome CDN -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
   </header>
 
   <!-- Hero -->
