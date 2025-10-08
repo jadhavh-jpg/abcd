@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wardhman Jewellers – Live Gold & Silver (INR)</title>
+  <style>
+    :root{--bg:#0f172a;--card:#111827;--muted:#94a3b8;--text:#e5e7eb;--accent:#fbbf24;--ok:#22c55e;--danger:#ef4444}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial;color:var(--text);background:linear-gradient(160deg,#0b1022,#0f172a 30%,#0b1022)}
+    .wrap{max-width:1200px;margin:auto;padding:24px}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    h1{font-size:clamp(22px,2.6vw,34px);margin:0;display:flex;align-items:center;gap:10px}
+    .logo{width:34px;height:34px;border-radius:8px;background:radial-gradient(circle at 30% 30%, #f59e0b, #b45309 60%, #78350f);display:inline-block;border:1px solid #d97706;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+    .badge{padding:6px 10px;border-radius:999px;background:#1f2937;color:#cbd5e1;font-size:12px}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(12,1fr)}
+    .card{grid-column:span 12;background:linear-gradient(180deg,#0b1224,rgba(17,24,39,.9));border:1px solid #1f2937;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+    @media(min-width:880px){.sm-6{grid-column:span 6}.sm-4{grid-column:span 4}}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .kpi{background:#0b1224;border:1px solid #1f2937;border-radius:14px;padding:12px;position:relative}
+    .kpi .label{color:var(--muted);font-size:12px}
+    .kpi .val{font-weight:700;font-size:20px;margin-top:4px}
+    .delta{position:absolute;right:10px;top:8px;font-size:12px}
+    .spark{width:100%;height:54px;display:block;margin-top:6px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;border-bottom:1px solid #1f2937;text-align:right}
+    th:first-child,td:first-child{text-align:left}
+    th{color:#cbd5e1;font-weight:600}
+    .row-title{color:#e2e8f0}
+    .muted{color:var(--muted)}
+    .controls{display:flex;gap:10px;flex-wrap:wrap}
+    button,select,input{background:#111827;border:1px solid #374151;color:#e5e7eb;border-radius:10px;padding:10px 12px;cursor:pointer}
+    input[type="number"]{max-width:120px}
+    button:hover{border-color:#475569}
+    footer{margin-top:18px;color:#94a3b8;font-size:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .ok{color:var(--ok)} .danger{color:var(--danger)}
+    .cta{display:inline-flex;align-items:center;gap:8px;background:#14532d;border-color:#166534}
+    .cta:hover{border-color:#16a34a}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1><span class="logo"></span> Wardhman Jewellers • Live Gold & Silver (INR)</h1>
+      <div class="controls">
+        <select id="refreshSelect" title="Refresh interval">
+          <option value="0">Manual</option>
+          <option value="30">Every 30s</option>
+          <option value="60" selected>Every 60s</option>
+          <option value="300">Every 5 min</option>
+        </select>
+        <button id="refreshBtn">Refresh Now</button>
+      </div>
+      <span class="badge" id="lastUpdated">—</span>
+    </header>
+
+    <section class="grid" style="margin-top:16px">
+      <div class="card sm-6">
+        <h3 style="margin:0 0 6px;font-size:18px">Gold (XAU) • Default view: <strong>22K (916)</strong></h3>
+        <div class="kpis">
+          <div class="kpi"><div class="label">22K – ₹ / gram</div><div class="val" id="xau22_g"></div><div class="delta" id="xau22_delta">—</div><canvas id="xau22_spark" class="spark"></canvas></div>
+          <div class="kpi"><div class="label">22K – ₹ / 10g</div><div class="val" id="xau22_10g"></div></div>
+          <div class="kpi"><div class="label">24K – ₹ / gram</div><div class="val" id="xau24_g"></div></div>
+          <div class="kpi"><div class="label">USD / oz</div><div class="val" id="xau_usd"></div></div>
+        </div>
+        <table>
+          <thead><tr><th>Purity</th><th>₹/g</th><th>₹/10g</th><th>₹/kg</th><th>Retail (incl.)</th></tr></thead>
+          <tbody id="goldRows"></tbody>
+        </table>
+        <div class="muted" style="margin-top:8px">Note: 22K ≈ 91.6% of 24K (pure) value. Retail = base + making + GST.</div>
+      </div>
+      <div class="card sm-6">
+        <h3 style="margin:0 0 6px;font-size:18px">Silver (XAG)</h3>
+        <div class="kpis">
+          <div class="kpi"><div class="label">₹ / gram</div><div class="val" id="xag_g"></div><div class="delta" id="xag_delta">—</div><canvas id="xag_spark" class="spark"></canvas></div>
+          <div class="kpi"><div class="label">₹ / 10g</div><div class="val" id="xag_10g"></div></div>
+          <div class="kpi"><div class="label">₹ / kg</div><div class="val" id="xag_kg"></div></div>
+          <div class="kpi"><div class="label">USD / oz</div><div class="val" id="xag_usd"></div></div>
+        </div>
+        <table>
+          <thead><tr><th>Measure</th><th>₹</th><th>Retail (incl.)</th></tr></thead>
+          <tbody id="silverRows"></tbody>
+        </table>
+      </div>
+
+      <div class="card sm-6">
+        <h3 style="margin:0 0 8px;font-size:18px">Pricing Settings</h3>
+        <div class="muted" style="margin-bottom:8px">International spot (USD/oz) → USD→INR conversion. IBJA/MCX official free APIs public nahi hote.</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end">
+          <div>
+            <label class="muted" for="apiKey">Metals API Key</label><br>
+            <input id="apiKey" type="password" placeholder="YOUR_METALS_API_KEY" style="min-width:260px">
+            <button id="saveKeyBtn">Save Key</button>
+            <span id="keyStatus" class="badge" style="margin-left:8px">Key not set</span>
+          </div>
+          <div>
+            <label class="muted" for="makingPerGram">Making ₹/g</label><br>
+            <input id="makingPerGram" type="number" step="0.01" value="50">
+          </div>
+          <div>
+            <label class="muted" for="gstPct">GST %</label><br>
+            <input id="gstPct" type="number" step="0.01" value="3">
+          </div>
+          <div>
+            <label class="muted" for="puritySelect">Default Purity</label><br>
+            <select id="puritySelect"><option value="0.916" selected>22K (916)</option><option value="1">24K (999)</option><option value="0.75">18K (750)</option></select>
+          </div>
+          <button id="applyPricing">Apply</button>
+        </div>
+      </div>
+
+      <div class="card sm-6">
+        <h3 style="margin:0 0 8px;font-size:18px">Contact & CTA</h3>
+        <p class="muted" style="margin:0 0 10px">Wardhman Jewellers, Sarafa Market, Manendragarh (C.G.)</p>
+        <a id="waBtn" class="cta" href="#" target="_blank" rel="noreferrer noopener" style="padding:12px 14px;border-radius:12px;text-decoration:none">
+          📲 WhatsApp Price Quote
+        </a>
+        <div class="muted" style="margin-top:8px">Button pre-fills current 22K gold & silver price with making + GST.</div>
+      </div>
+    </section>
+
+    <footer>
+      <div id="footMsg">Data: metals-api.com (XAU/XAG) + exchangerate.host (USD→INR). Protect your API key by routing via backend in production.</div>
+      <div><span id="statusMsg" class="badge">Ready</span></div>
+    </footer>
+  </div>
+
+  <script>
+    const OUNCE_TO_GRAM = 31.1034768;
+    const DEFAULT_METALS_API_KEY = "dc59b75cae62ef974594fe84e401c61f"; // User-provided key
+    const formatINR = n => new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(n);
+    const formatUSD = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(n);
+
+    // DOM refs
+    const els = {
+      xau22_g: document.getElementById('xau22_g'), xau22_10g: document.getElementById('xau22_10g'), xau24_g: document.getElementById('xau24_g'), xau_usd: document.getElementById('xau_usd'),
+      xag_g: document.getElementById('xag_g'), xag_10g: document.getElementById('xag_10g'), xag_kg: document.getElementById('xag_kg'), xag_usd: document.getElementById('xag_usd'),
+      goldRows: document.getElementById('goldRows'), silverRows: document.getElementById('silverRows'), last: document.getElementById('lastUpdated'),
+      refreshBtn: document.getElementById('refreshBtn'), refreshSelect: document.getElementById('refreshSelect'), statusMsg: document.getElementById('statusMsg'),
+      apiKey: document.getElementById('apiKey'), keyStatus: document.getElementById('keyStatus'), saveKeyBtn: document.getElementById('saveKeyBtn'),
+      making: document.getElementById('makingPerGram'), gst: document.getElementById('gstPct'), puritySelect: document.getElementById('puritySelect'), applyPricing: document.getElementById('applyPricing'),
+      xau22_spark: document.getElementById('xau22_spark'), xag_spark: document.getElementById('xag_spark'), waBtn: document.getElementById('waBtn')
+    };
+
+    // Local storage helpers
+    const loadKey = () => localStorage.getItem('METALS_API_KEY') || DEFAULT_METALS_API_KEY;
+    const saveKey = (k) => localStorage.setItem('METALS_API_KEY', k || '');
+    const loadPrefs = () => JSON.parse(localStorage.getItem('PRICING_PREFS')||'{}');
+    const savePrefs = (p) => localStorage.setItem('PRICING_PREFS', JSON.stringify(p||{}));
+
+    function setKeyStatus(){
+      const has = !!loadKey();
+      els.keyStatus.textContent = has ? 'Key saved (local)' : 'Key not set';
+      els.keyStatus.style.background = has ? '#064e3b' : '#1f2937';
+    }
+
+    // Init inputs from saved values; prefill key input with the default
+    els.apiKey.value = loadKey(); setKeyStatus();
+    const prefs = Object.assign({making:50,gst:3,purity:0.916}, loadPrefs());
+    els.making.value = prefs.making; els.gst.value = prefs.gst; els.puritySelect.value = String(prefs.purity);
+
+    els.saveKeyBtn.addEventListener('click', ()=>{ saveKey(els.apiKey.value.trim()); setKeyStatus(); });
+    els.applyPricing.addEventListener('click', ()=>{ savePrefs({making:Number(els.making.value), gst:Number(els.gst.value), purity:Number(els.puritySelect.value)}); renderAll(); buildWA(); });
+
+    async function fetchUSDINR(){
+      const r = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=INR');
+      const j = await r.json();
+      if(!j || !j.rates || !j.rates.INR) throw new Error('INR rate missing');
+      return j.rates.INR;
+    }
+
+    async function fetchMetals(){
+      const key = loadKey();
+      if(!key) throw new Error('Please add your Metals API key.');
+      const url = `https://metals-api.com/api/latest?access_key=${encodeURIComponent(key)}&base=USD&symbols=XAU,XAG`;
+      const r = await fetch(url);
+      const j = await r.json();
+      if(!j || !j.success){
+        const msg = (j && j.error && (j.error.info||j.error.code)) || 'API error';
+        throw new Error('Metals API: '+msg);
+      }
+      return { XAU: j.rates.XAU, XAG: j.rates.XAG, ts: j.timestamp };
+    }
+
+    function toINRperGram(usdPerOz, usdInr){ return (usdPerOz / OUNCE_TO_GRAM) * usdInr; }
+
+    let state = {usdInr:null, xauUsdOz:null, xagUsdOz:null, ts:null, hist:{xau22:[], xag:[]}, last:{xau22:null, xag:null}};
+
+    function pushHist(arr, val, max=60){ arr.push(val); if(arr.length>max) arr.shift(); }
+
+    function drawSpark(canvas, data){
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth; const h = canvas.height = canvas.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      if(!data || data.length<2) return;
+      const min = Math.min(...data), max = Math.max(...data); const pad=6;
+      const scaleX = (i)=> i*(w/(data.length-1));
+      const scaleY = (v)=> h - ((v-min)/(max-min||1))*(h-pad*2) - pad;
+      ctx.lineWidth = 2; ctx.globalAlpha = 0.9; ctx.beginPath(); ctx.moveTo(0, scaleY(data[0]));
+      for(let i=1;i<data.length;i++){ ctx.lineTo(scaleX(i), scaleY(data[i])); }
+      ctx.strokeStyle = '#fbbf24'; ctx.stroke();
+    }
+
+    function computeRetail(basePerGram){
+      const making = Number(els.making.value||0); const gst = Number(els.gst.value||0)/100;
+      const beforeGst = basePerGram + making; return beforeGst * (1+gst);
+    }
+
+    function renderGold(perGram24){
+      const purities = [
+        {name:'24K (999)', factor:1.0},
+        {name:'23K (958 est.)', factor:0.958},
+        {name:'22K (916)', factor:0.916},
+        {name:'18K (750)', factor:0.75}
+      ];
+      const rows = purities.map(p=>{
+        const pg = perGram24 * p.factor; const retail = computeRetail(pg);
+        return `<tr><td class="row-title">${p.name}</td><td>${formatINR(pg)}</td><td>${formatINR(pg*10)}</td><td>${formatINR(pg*1000)}</td><td>${formatINR(retail*10)}</td></tr>`
+      }).join('');
+      els.goldRows.innerHTML = rows;
+
+      const pg22 = perGram24*0.916; els.xau22_g.textContent = formatINR(pg22); els.xau22_10g.textContent = formatINR(pg22*10);
+      els.xau24_g.textContent = formatINR(perGram24);
+      els.xau_usd.textContent = formatUSD(state.xauUsdOz||0);
+
+      const last = state.last.xau22; if(last!=null){ const d = pg22-last; const pct = (d/last)*100; setDelta('xau22_delta', d, pct); }
+      state.last.xau22 = pg22; pushHist(state.hist.xau22, pg22); drawSpark(els.xau22_spark, state.hist.xau22);
+    }
+
+    function renderSilver(perGram){
+      const retail = computeRetail(perGram);
+      els.silverRows.innerHTML = `
+        <tr><td class="row-title">Per gram</td><td>${formatINR(perGram)}</td><td>${formatINR(retail)}</td></tr>
+        <tr><td class="row-title">Per 10 gram</td><td>${formatINR(perGram*10)}</td><td>${formatINR(retail*10)}</td></tr>
+        <tr><td class="row-title">Per kilogram</td><td>${formatINR(perGram*1000)}</td><td>${formatINR(retail*1000)}</td></tr>
+      `;
+      els.xag_g.textContent = formatINR(perGram); els.xag_10g.textContent = formatINR(perGram*10); els.xag_kg.textContent = formatINR(perGram*1000); els.xag_usd.textContent = formatUSD(state.xagUsdOz||0);
+      const last = state.last.xag; if(last!=null){ const d = perGram-last; const pct = (d/last)*100; setDelta('xag_delta', d, pct); }
+      state.last.xag = perGram; pushHist(state.hist.xag, perGram); drawSpark(els.xag_spark, state.hist.xag);
+    }
+
+    function setDelta(id, d, pct){
+      const el = document.getElementById(id);
+      const cls = d>=0 ? 'ok' : 'danger'; const arrow = d>=0 ? '▲' : '▼';
+      el.className = 'delta ' + cls; el.textContent = `${arrow} ${d>=0?'+':''}${d.toFixed(2)} (${pct.toFixed(2)}%)`;
+    }
+
+    function setUpdated(ts){ const d = ts ? new Date(ts*1000) : new Date(); els.last.textContent = 'Last updated: '+d.toLocaleString(); }
+
+    function buildWA(){
+      const making = Number(els.making.value||0); const gst = Number(els.gst.value||0);
+      const pure = Number(els.puritySelect.value);
+      const perGram24 = toINRperGram(state.xauUsdOz||0, state.usdInr||1); const goldPg = perGram24*pure; const goldRetail10g = computeRetail(goldPg)*10;
+      const silverPg = toINRperGram(state.xagUsdOz||0, state.usdInr||1); const silverRetailKg = computeRetail(silverPg)*1000;
+      const msg = encodeURIComponent(`Namaste! Kripya latest quote batayein:\nGold (${pure===0.916?'22K':'24K'}) ~ ${formatINR(goldPg)}/g | Retail (10g) ~ ${formatINR(goldRetail10g)}\nSilver ~ ${formatINR(silverPg)}/g | Retail (1kg) ~ ${formatINR(silverRetailKg)}\nMaking: ₹${making}/g, GST: ${gst}%`);
+      const phone = '918878211880';
+      els.waBtn.href = `https://wa.me/${phone}?text=${msg}`;
+    }
+
+    async function refresh(){
+      try{
+        els.last.textContent = 'Updating…'; els.statusMsg.textContent='Fetching rates…';
+        const [usdInr, metals] = await Promise.all([fetchUSDINR(), fetchMetals()]);
+        state.usdInr = usdInr; state.xauUsdOz = metals.XAU; state.xagUsdOz = metals.XAG; state.ts = metals.ts;
+        renderAll(); buildWA(); setUpdated(metals.ts); els.statusMsg.textContent='Updated';
+      }catch(e){ els.last.textContent = 'Error'; els.statusMsg.textContent = e.message; alert(e.message); }
+    }
+
+    function renderAll(){
+      if(state.usdInr==null || state.xauUsdOz==null) return;
+      const perGram24 = toINRperGram(state.xauUsdOz, state.usdInr);
+      renderGold(perGram24);
+      const silverPg = toINRperGram(state.xagUsdOz, state.usdInr); renderSilver(silverPg);
+    }
+
+    let timer=null; function setAutoRefresh(){ if(timer) clearInterval(timer); const sec=parseInt(els.refreshSelect.value,10); if(sec>0){ timer=setInterval(refresh, sec*1000);} }
+    els.refreshBtn.addEventListener('click', refresh); els.refreshSelect.addEventListener('change', setAutoRefresh);
+
+    // Kick-off
+    setAutoRefresh(); refresh();
+  </script>
+</body>
+</html>
